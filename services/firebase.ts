@@ -8,12 +8,13 @@ import { getDatabase, ref, get, set, push, remove, update, onValue, Unsubscribe 
 // 3. Copie as credenciais abaixo
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyDmxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "agendaflow-xxxxx.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "agendaflow-xxxxx",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "agendaflow-xxxxx.appspot.com",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://agendaflow-xxxxx-default-rtdb.firebaseio.com",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyBxFCKVNNv8ITRBxQZlXs-8D0jOqsY2QpA",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "agendaflow-bcf63.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "agendaflow-bcf63",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "agendaflow-bcf63.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "436794882324",
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://agendaflow-bcf63-default-rtdb.firebaseio.com",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:436794882324:web:dba43233cc778f3e69aa01",
 };
 
 // Initialize Firebase
