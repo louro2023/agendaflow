@@ -56,12 +56,22 @@ const Dashboard: React.FC = () => {
   }, [events]);
 
   const getDayEvents = (day: Date) => {
-    return filteredEvents.filter(event => isSameDay(new Date(event.date), day));
+    // Corrigir comparação de data com timezone local
+    const year = day.getFullYear();
+    const month = String(day.getMonth() + 1).padStart(2, '0');
+    const date = String(day.getDate()).padStart(2, '0');
+    const dayString = `${year}-${month}-${date}`;
+    
+    return filteredEvents.filter(event => event.date === dayString);
   };
 
   const handleDayDoubleClick = (day: Date) => {
     if (isCommon || isAdmin) {
-      setSelectedDay(format(day, 'yyyy-MM-dd'));
+      // Corrigir para usar a data em timezone local (não UTC)
+      const year = day.getFullYear();
+      const month = String(day.getMonth() + 1).padStart(2, '0');
+      const date = String(day.getDate()).padStart(2, '0');
+      setSelectedDay(`${year}-${month}-${date}`);
       setSelectedEvent(null);
       setModalOpen(true);
     }
