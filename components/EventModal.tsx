@@ -111,7 +111,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Ex: Reunião de Vendas"
+                  placeholder="Ex: Reunião de Obreiros"
                 />
               </div>
 
