@@ -5,7 +5,9 @@ import {
   persistEvents, 
   persistUsers, 
   getLocalEvents, 
-  getLocalUsers 
+  getLocalUsers,
+  subscribeToEvents,
+  subscribeToUsers
 } from '../services/storage';
 
 interface DataContextType {
@@ -26,33 +28,48 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Initialize state synchronously from localStorage cache
-  // This ensures data is available IMMEDIATELY on refresh, solving the "data loss" feeling
   const [events, setEvents] = useState<EventRequest[]>(() => getLocalEvents());
   const [users, setUsers] = useState<User[]>(() => getLocalUsers());
-  
-  // We still track loading for the background server sync
-  const [loading, setLoading] = useState(false); // Starts false because we likely have cache
+  const [loading, setLoading] = useState(false);
 
-  // Load data from server on mount (Background Sync)
+  // Efeito para carregar dados iniciais e configurar listeners em tempo real
   useEffect(() => {
     loadServerData();
+    
+    // Retorna função de cleanup
+    return () => {
+      // Listeners serão desinscritos aqui se necessário
+    };
   }, []);
 
   const loadServerData = async () => {
-    // Only show loading spinner if we have NO data locally
     if (events.length === 0 && users.length === 0) {
       setLoading(true);
     }
 
     try {
       const data = await fetchInitialData();
-      // Server data authority: update state with what server has
-      // This handles the case where another user updated something
       setEvents(data.events);
       setUsers(data.users);
+
+      // Depois que os dados iniciais são carregados, subscribe para atualizações em tempo real
+      const unsubscribeEvents = subscribeToEvents((updatedEvents) => {
+        console.log('🔄 Eventos atualizados em tempo real:', updatedEvents.length);
+        setEvents(updatedEvents);
+      });
+
+      const unsubscribeUsers = subscribeToUsers((updatedUsers) => {
+        console.log('🔄 Usuários atualizados em tempo real:', updatedUsers.length);
+        setUsers(updatedUsers);
+      });
+
+      // Cleanup ao desmontar
+      return () => {
+        unsubscribeEvents();
+        unsubscribeUsers();
+      };
     } catch (error) {
       console.error("Falha ao sincronizar com servidor. Usando dados locais.", error);
-      // We don't clear state here, we keep the local cache active
     } finally {
       setLoading(false);
     }

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "name": "Administrador (Local)",
+    "email": "admin@demo.com",
+    "password": "123",
+    "role": "ADMIN",
+    "active": true
+  },
+  {
+    "id": "2",
+    "name": "Usuário Comum (Local)",
+    "email": "user@demo.com",
+    "password": "123",
+    "role": "COMMON",
+    "active": true
+  },
+  {
+    "id": "3",
+    "name": "Visualizador (Local)",
+    "email": "viewer@demo.com",
+    "password": "123",
+    "role": "VIEWER",
+    "active": true
+  },
+  {
+    "name": "Henrique",
+    "email": "henrique@henrique.com",
+    "password": "123",
+    "role": "ADMIN",
+    "active": true,
+    "id": "de61b3a1-2e51-42a6-b23c-0a82265f8bb6"
+  }
+]
