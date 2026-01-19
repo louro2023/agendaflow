@@ -94,20 +94,7 @@ const Login: React.FC = () => {
                 </button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-gray-100">
-                <p className="text-xs text-center text-gray-400 uppercase tracking-widest font-bold mb-4">Acesso Rápido (Demo)</p>
-                <div className="flex justify-center gap-3">
-                    <button onClick={() => {setEmail('admin@demo.com'); setPassword('123')}} className="px-3 py-1.5 text-xs font-medium bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition">
-                        Admin
-                    </button>
-                    <button onClick={() => {setEmail('user@demo.com'); setPassword('123')}} className="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition">
-                        Comum
-                    </button>
-                    <button onClick={() => {setEmail('viewer@demo.com'); setPassword('123')}} className="px-3 py-1.5 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                        Viewer
-                    </button>
-                </div>
-            </div>
+
         </div>
 
         {/* Right Side (Image/Decoration) */}
