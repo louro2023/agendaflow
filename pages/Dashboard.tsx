@@ -170,11 +170,12 @@ const Dashboard: React.FC = () => {
     const distanceY = Math.abs(e.changedTouches[0].clientY - touchStartY);
     const timeDiff = Date.now() - touchStartTime;
     
-    const MIN_SWIPE_DISTANCE = 80; // Aumentado para 80px (era 50px)
-    const MAX_VERTICAL_DISTANCE = 30; // Máximo movimento vertical permitido
-    const MIN_TIME_FOR_SWIPE = 200; // Mínimo de 200ms para ser considerado swipe
+    // Parâmetros otimizados para celulares reais
+    const MIN_SWIPE_DISTANCE = 40; // Reduzido para 40px (mais realista em celulares)
+    const MAX_VERTICAL_DISTANCE = 60; // Aumentado para 60px (mais tolerante)
+    const MIN_TIME_FOR_SWIPE = 100; // Reduzido para 100ms (mais responsivo)
     
-    // Validações rigorosas:
+    // Validações otimizadas:
     // 1. Movimento horizontal deve ser significativo
     if (Math.abs(distanceX) < MIN_SWIPE_DISTANCE) {
       return; // Ignora se não teve movimento horizontal suficiente
@@ -194,6 +195,7 @@ const Dashboard: React.FC = () => {
     const isRightSwipe = distanceX < -MIN_SWIPE_DISTANCE;
 
     if (isLeftSwipe) {
+      e.preventDefault();
       setSwipeDirection('left');
       setIsAnimating(true);
       setTimeout(() => {
@@ -202,12 +204,15 @@ const Dashboard: React.FC = () => {
       }, 150);
     }
     if (isRightSwipe) {
+      e.preventDefault();
       setSwipeDirection('right');
       setIsAnimating(true);
       setTimeout(() => {
         prevMonth();
         setTimeout(() => setIsAnimating(false), 300);
       }, 150);
+    }
+  };
     }
   };
 
