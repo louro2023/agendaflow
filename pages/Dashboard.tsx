@@ -33,6 +33,17 @@ const Dashboard: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [pickerYear, setPickerYear] = useState(currentDate.getFullYear());
 
+  // Swipe State - melhorado com rastreamento de Y e tempo
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchStartY, setTouchStartY] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const [touchStartTime, setTouchStartTime] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  
+  // Animation State
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
   const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -140,6 +151,66 @@ const Dashboard: React.FC = () => {
     setIsDatePickerOpen(!isDatePickerOpen);
   };
 
+  // Swipe handlers - mais rigoroso para distinguir clique de swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+    setTouchStartY(e.targetTouches[0].clientY);
+    setTouchStartTime(Date.now());
+    setIsSwiping(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setTouchEnd(e.changedTouches[0].clientX);
+    handleSwipe(e);
+    setIsSwiping(false);
+  };
+
+  const handleSwipe = (e: React.TouchEvent) => {
+    const distanceX = touchStart - touchEnd;
+    const distanceY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    const timeDiff = Date.now() - touchStartTime;
+    
+    const MIN_SWIPE_DISTANCE = 80; // Aumentado para 80px (era 50px)
+    const MAX_VERTICAL_DISTANCE = 30; // Máximo movimento vertical permitido
+    const MIN_TIME_FOR_SWIPE = 200; // Mínimo de 200ms para ser considerado swipe
+    
+    // Validações rigorosas:
+    // 1. Movimento horizontal deve ser significativo
+    if (Math.abs(distanceX) < MIN_SWIPE_DISTANCE) {
+      return; // Ignora se não teve movimento horizontal suficiente
+    }
+    
+    // 2. Não pode ter tido muito movimento vertical (é scroll, não swipe)
+    if (distanceY > MAX_VERTICAL_DISTANCE) {
+      return; // Ignora se teve muito movimento vertical
+    }
+    
+    // 3. Deve ter levado um tempo mínimo (não é clique rápido)
+    if (timeDiff < MIN_TIME_FOR_SWIPE) {
+      return; // Ignora cliques/toques muito rápidos
+    }
+
+    const isLeftSwipe = distanceX > MIN_SWIPE_DISTANCE;
+    const isRightSwipe = distanceX < -MIN_SWIPE_DISTANCE;
+
+    if (isLeftSwipe) {
+      setSwipeDirection('left');
+      setIsAnimating(true);
+      setTimeout(() => {
+        nextMonth();
+        setTimeout(() => setIsAnimating(false), 300);
+      }, 150);
+    }
+    if (isRightSwipe) {
+      setSwipeDirection('right');
+      setIsAnimating(true);
+      setTimeout(() => {
+        prevMonth();
+        setTimeout(() => setIsAnimating(false), 300);
+      }, 150);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Welcome & Header */}
@@ -220,7 +291,17 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div 
+        className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${
+          isAnimating 
+            ? swipeDirection === 'left' 
+              ? 'opacity-0 translate-x-full' 
+              : 'opacity-0 -translate-x-full'
+            : 'opacity-100 translate-x-0'
+        }`}
+        onTouchStart={handleTouchStart} 
+        onTouchEnd={handleTouchEnd}
+      >
         <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/50">
           {weekDays.map(day => (
             <div key={day} className="py-4 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
