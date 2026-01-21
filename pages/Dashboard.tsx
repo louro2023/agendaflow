@@ -213,8 +213,6 @@ const Dashboard: React.FC = () => {
       }, 150);
     }
   };
-    }
-  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
