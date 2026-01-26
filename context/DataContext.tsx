@@ -32,44 +32,27 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [users, setUsers] = useState<User[]>(() => getLocalUsers());
   const [loading, setLoading] = useState(false);
 
-  // Efeito para carregar dados iniciais e configurar listeners em tempo real
+  // Efeito para carregar dados iniciais
   useEffect(() => {
+    // Carrega dados do servidor de forma não-bloqueante
     loadServerData();
-    
-    // Retorna função de cleanup
-    return () => {
-      // Listeners serão desinscritos aqui se necessário
-    };
   }, []);
 
   const loadServerData = async () => {
-    if (events.length === 0 && users.length === 0) {
-      setLoading(true);
-    }
-
     try {
+      console.log('📡 Carregando dados iniciais...');
       const data = await fetchInitialData();
-      setEvents(data.events);
-      setUsers(data.users);
-
-      // Depois que os dados iniciais são carregados, subscribe para atualizações em tempo real
-      const unsubscribeEvents = subscribeToEvents((updatedEvents) => {
-        console.log('🔄 Eventos atualizados em tempo real:', updatedEvents.length);
-        setEvents(updatedEvents);
-      });
-
-      const unsubscribeUsers = subscribeToUsers((updatedUsers) => {
-        console.log('🔄 Usuários atualizados em tempo real:', updatedUsers.length);
-        setUsers(updatedUsers);
-      });
-
-      // Cleanup ao desmontar
-      return () => {
-        unsubscribeEvents();
-        unsubscribeUsers();
-      };
+      console.log('✅ Dados carregados:', data);
+      
+      if (data.users && data.users.length > 0) {
+        setUsers(data.users);
+      }
+      if (data.events && data.events.length > 0) {
+        setEvents(data.events);
+      }
     } catch (error) {
-      console.error("Falha ao sincronizar com servidor. Usando dados locais.", error);
+      console.error("Erro ao carregar dados:", error);
+      // Continua com dados locais
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { formatDateBR } from '../utils/dateFormatter';
 import { User, UserRole, EventStatus } from '../types';
 import { Check, X, ShieldAlert, User as UserIcon, Power, TrendingUp, Users, Calendar, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -164,7 +165,7 @@ const AdminPanel: React.FC = () => {
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
                                 <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg uppercase tracking-wide">
-                                    {event.date.split('-').reverse().join('/')}
+                                    {formatDateBR(event.date)} às {event.time}
                                 </span>
                                 <span className="text-xs text-gray-400 font-medium">ID: {event.id.slice(0,8)}</span>
                             </div>
