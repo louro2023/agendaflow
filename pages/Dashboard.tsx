@@ -15,9 +15,10 @@ import { ptBR } from 'date-fns/locale';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { formatDateBR } from '../utils/dateFormatter';
 import { EventStatus, EventRequest } from '../types';
 import EventModal from '../components/EventModal';
-import { ChevronLeft, ChevronRight, Plus, ChevronDown, Trash2, CalendarDays } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, ChevronDown, Trash2, CalendarDays, Grid3x3, List } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { events, addEvent, updateEventStatus, deleteEvent, updateEventDetails } = useData();
@@ -28,6 +29,8 @@ const Dashboard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<string | undefined>(undefined);
   const [selectedEvent, setSelectedEvent] = useState<EventRequest | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid'); // New: view mode state
+  const [tableFilterDate, setTableFilterDate] = useState<string | undefined>(undefined); // Filter by date in table
 
   // Date Picker State
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
@@ -39,6 +42,10 @@ const Dashboard: React.FC = () => {
   const [touchEnd, setTouchEnd] = useState(0);
   const [touchStartTime, setTouchStartTime] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
+  
+  // Double Tap State
+  const [lastTapTime, setLastTapTime] = useState(0);
+  const [lastTapTarget, setLastTapTarget] = useState<string>('');
   
   // Animation State
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
@@ -88,6 +95,29 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleTableRowDoubleTap = (dateStr: string) => {
+    if (isCommon || isAdmin) {
+      setSelectedDay(dateStr);
+      setSelectedEvent(null);
+      setModalOpen(true);
+    }
+  };
+
+  const handleTableRowTap = (dateStr: string, e: React.TouchEvent) => {
+    e.stopPropagation();
+    const currentTime = Date.now();
+    const timeSinceLastTap = currentTime - lastTapTime;
+    
+    // Se o último toque foi dentro de 300ms no mesmo elemento, é um duplo-toque
+    if (timeSinceLastTap < 300 && lastTapTarget === dateStr) {
+      handleTableRowDoubleTap(dateStr);
+      setLastTapTime(0); // Reset para evitar triple-tap
+    } else {
+      setLastTapTime(currentTime);
+      setLastTapTarget(dateStr);
+    }
+  };
+
   const handleEventClick = (e: React.MouseEvent, event: EventRequest) => {
     e.stopPropagation();
     setSelectedEvent(event);
@@ -95,16 +125,20 @@ const Dashboard: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleCreateEvent = (title: string, description: string) => {
-    if (selectedDay && currentUser) {
+  const handleCreateEvent = (title: string, description: string, date?: string, time?: string) => {
+    const eventDate = date || selectedDay;
+    const eventTime = time || '09:00';
+    if (eventDate && currentUser) {
       addEvent({
         title,
         description,
-        date: selectedDay,
+        date: eventDate,
+        time: eventTime,
         requesterId: currentUser.id,
         requesterName: currentUser.name
       });
       addToast('Evento solicitado com sucesso!', 'success');
+      setSelectedDay(undefined); // Limpar a data selecionada
     }
   };
 
@@ -291,9 +325,38 @@ const Dashboard: React.FC = () => {
             <ChevronRight size={20} />
           </button>
         </div>
+
+        {/* View Mode Toggle */}
+        <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-200/50">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-2 rounded-md transition flex items-center gap-2 ${
+              viewMode === 'grid'
+                ? 'bg-white shadow-sm text-indigo-600'
+                : 'text-gray-600 hover:bg-white'
+            }`}
+            title="Vista em Grade"
+          >
+            <Grid3x3 size={20} />
+            <span className="text-sm font-medium hidden md:inline">Grade</span>
+          </button>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`p-2 rounded-md transition flex items-center gap-2 ${
+              viewMode === 'table'
+                ? 'bg-white shadow-sm text-indigo-600'
+                : 'text-gray-600 hover:bg-white'
+            }`}
+            title="Vista em Tabela"
+          >
+            <List size={20} />
+            <span className="text-sm font-medium hidden md:inline">Tabela</span>
+          </button>
+        </div>
       </div>
 
-      {/* Calendar Grid */}
+      {/* Calendar Grid or Table */}
+      {viewMode === 'grid' ? (
       <div 
         className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${
           isAnimating 
@@ -397,6 +460,175 @@ const Dashboard: React.FC = () => {
           })}
         </div>
       </div>
+      ) : (
+      // Table View - All days of the month
+      <div className="space-y-4">
+        {/* Table Controls */}
+        <div className="flex flex-col md:flex-row gap-3 items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex gap-2">
+            {(isCommon || isAdmin) && (
+              <button
+                onClick={() => {
+                  const year = currentDate.getFullYear();
+                  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                  const date = String(currentDate.getDate()).padStart(2, '0');
+                  setSelectedDay(`${year}-${month}-${date}`);
+                  setSelectedEvent(null);
+                  setModalOpen(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
+              >
+                <Plus size={18} />
+                <span>Novo Evento</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Table - Show all days of the month */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50/50 border-b border-gray-100">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Data</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Hora</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Título</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Descrição</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Solicitante</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {(() => {
+                  const rows: React.ReactNode[] = [];
+                  
+                  calendarDays.forEach((day) => {
+                    const dayEvents = getDayEvents(day);
+                    const isCurrentMonth = isSameMonth(day, currentDate);
+                    const dateStr = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
+                    
+                    // If no events, show a row for the day
+                    if (dayEvents.length === 0) {
+                      rows.push(
+                        <tr 
+                          key={`${dateStr}-empty`} 
+                          onDoubleClick={() => {
+                            if (isCommon || isAdmin) {
+                              setSelectedDay(dateStr);
+                              setSelectedEvent(null);
+                              setModalOpen(true);
+                            }
+                          }}
+                          onTouchStart={(e) => handleTableRowTap(dateStr, e)}
+                          className={`${!isCurrentMonth ? 'bg-gray-50/50' : ''} hover:bg-gray-50/50 transition-colors ${(isCommon || isAdmin) && isCurrentMonth ? 'cursor-pointer' : ''}`}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`text-sm font-medium ${!isCurrentMonth ? 'text-gray-400' : 'text-gray-900'}`}>
+                              {formatDateBR(dateStr)}
+                            </span>
+                          </td>
+                          <td colSpan={6} className="px-6 py-4">
+                            <span className="text-sm text-gray-400 italic">
+                              {(isCommon || isAdmin) ? 'Sem eventos agendados' : 'Nenhum evento'}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    } else {
+                      // Show all events for this day
+                      dayEvents.forEach((event, idx) => {
+                        rows.push(
+                          <tr 
+                            key={event.id} 
+                            onDoubleClick={() => {
+                              if ((isCommon || isAdmin) && idx === 0) {
+                                setSelectedDay(dateStr);
+                                setSelectedEvent(null);
+                                setModalOpen(true);
+                              }
+                            }}
+                            onTouchStart={(e) => {
+                              if (idx === 0) {
+                                handleTableRowTap(dateStr, e);
+                              }
+                            }}
+                            className={`${!isCurrentMonth ? 'bg-gray-50/50' : ''} hover:bg-gray-50/50 transition-colors group/row cursor-pointer ${(isCommon || isAdmin) && idx === 0 ? 'cursor-pointer' : ''}`}
+                          >
+                            {idx === 0 && (
+                              <td rowSpan={dayEvents.length} className="px-6 py-4 whitespace-nowrap align-top">
+                                <span className={`text-sm font-medium ${!isCurrentMonth ? 'text-gray-400' : 'text-gray-900'}`}>
+                                  {formatDateBR(dateStr)}
+                                </span>
+                              </td>
+                            )}
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="text-sm font-medium text-gray-900">{event.time}</span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="text-sm font-semibold text-gray-900">{event.title}</span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="text-sm text-gray-600 line-clamp-2">{event.description}</span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="text-sm text-gray-600">{event.requesterName}</span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border ${
+                                event.status === EventStatus.APPROVED 
+                                  ? 'bg-green-50 text-green-700 border-green-200' 
+                                  : event.status === EventStatus.REJECTED 
+                                    ? 'bg-red-50 text-red-700 border-red-200' 
+                                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                              }`}>
+                                <span className={`w-2 h-2 rounded-full mr-2 ${
+                                  event.status === EventStatus.APPROVED ? 'bg-green-500' : 
+                                  event.status === EventStatus.REJECTED ? 'bg-red-500' : 'bg-amber-500'
+                                }`} />
+                                {event.status === EventStatus.APPROVED ? 'Aprovado' : event.status === EventStatus.REJECTED ? 'Rejeitado' : 'Pendente'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEventClick(e, event);
+                                  }}
+                                  className="text-indigo-600 hover:text-indigo-700 font-medium text-sm hover:underline"
+                                >
+                                  Detalhes
+                                </button>
+                                {isAdmin && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleDelete(event.id);
+                                    }}
+                                    className="text-red-600 hover:text-red-700 font-medium text-sm hover:underline"
+                                  >
+                                    Deletar
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      });
+                    }
+                  });
+                  
+                  return rows;
+                })()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      )}
 
       <div className="flex gap-6 text-sm text-gray-500 px-4 bg-white py-3 rounded-xl border border-gray-100 shadow-sm w-fit">
         <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 bg-amber-500 rounded-full"></div> Pendente</div>
@@ -409,6 +641,7 @@ const Dashboard: React.FC = () => {
         onClose={() => setModalOpen(false)}
         selectedDate={selectedDay}
         existingEvent={selectedEvent}
+        allEvents={filteredEvents}
         onSubmit={handleCreateEvent}
         onApprove={handleApprove}
         onReject={handleReject}
