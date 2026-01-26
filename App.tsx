@@ -20,10 +20,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 // Component to handle global loading state
 const AppContent = () => {
-  const { loading, users } = useData();
+  const { loading } = useData();
 
-  // Se não tem usuários e está carregando, mostra loader
-  if (loading && users.length === 0) {
+  if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-indigo-600">
         <Loader2 size={48} className="animate-spin mb-4" />

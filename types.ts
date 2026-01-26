@@ -24,7 +24,6 @@ export interface EventRequest {
   title: string;
   description: string;
   date: string; // ISO string YYYY-MM-DD
-  time: string; // HH:MM format (24-hour)
   status: EventStatus;
   requesterId: string;
   requesterName: string;

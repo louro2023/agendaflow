@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { EventRequest, EventStatus } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { formatDateBR, validateEventConflict } from '../utils/dateFormatter';
-import { X, Check, Trash2, Edit2, AlertCircle } from 'lucide-react';
+import { X, Check, Trash2, Edit2 } from 'lucide-react';
 
 interface EventModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDate?: string;
   existingEvent?: EventRequest | null;
-  allEvents?: EventRequest[];
-  onSubmit: (title: string, description: string, date?: string, time?: string) => void;
+  onSubmit: (title: string, description: string) => void;
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -21,8 +19,7 @@ const EventModal: React.FC<EventModalProps> = ({
   isOpen, 
   onClose, 
   selectedDate, 
-  existingEvent,
-  allEvents = [],
+  existingEvent, 
   onSubmit,
   onApprove,
   onReject,
@@ -33,80 +30,28 @@ const EventModal: React.FC<EventModalProps> = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [chosenDate, setChosenDate] = useState<string | undefined>(undefined);
-  const [dateInputValue, setDateInputValue] = useState('');
-  const [chosenTime, setChosenTime] = useState<string>('09:00');
-  const [conflictError, setConflictError] = useState<string>('');
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    
-    // Format as DD/MM/YYYY while typing
-    if (value.length <= 2) {
-      setDateInputValue(value);
-    } else if (value.length <= 4) {
-      setDateInputValue(`${value.slice(0, 2)}/${value.slice(2)}`);
-    } else if (value.length <= 8) {
-      setDateInputValue(`${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4, 8)}`);
-    }
-    
-    // If we have a complete date, convert to ISO format
-    if (value.length === 8) {
-      const day = value.slice(0, 2);
-      const month = value.slice(2, 4);
-      const year = value.slice(4, 8);
-      const isoDate = `${year}-${month}-${day}`;
-      
-      // Validate date
-      const dateObj = new Date(isoDate + 'T00:00:00');
-      if (!isNaN(dateObj.getTime())) {
-        setChosenDate(isoDate);
-      }
-    }
-  };
 
   useEffect(() => {
     if (existingEvent) {
       setTitle(existingEvent.title);
       setDescription(existingEvent.description);
       setIsEditing(false);
-      setChosenDate(undefined);
-      setDateInputValue('');
-      setChosenTime(existingEvent.time || '09:00');
-      setConflictError('');
     } else {
       setTitle('');
       setDescription('');
       setIsEditing(true); // New event is always "editing" mode
-      setChosenDate(selectedDate); // Set initial date from prop
-      setDateInputValue(selectedDate ? formatDateBR(selectedDate) : '');
-      setChosenTime('09:00'); // Default time
-      setConflictError('');
     }
-  }, [existingEvent, isOpen, selectedDate]);
+  }, [existingEvent, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (existingEvent && isEditing && onEdit) {
       onEdit(existingEvent.id, title, description);
       setIsEditing(false);
-    } else if (!existingEvent) {
-      // Validar conflito de horário para novo evento
-      if (chosenDate) {
-        const validation = validateEventConflict(chosenDate, chosenTime, allEvents);
-        
-        if (!validation.valid) {
-          setConflictError(validation.message || 'Conflito de horário detectado');
-          return;
-        }
-      }
-      
-      setConflictError(''); // Limpar erro se passou na validação
-      // Para novos eventos, passa a data e hora escolhidas
-      onSubmit(title, description, chosenDate, chosenTime);
+    } else {
+      onSubmit(title, description);
       onClose();
     }
   };
@@ -152,51 +97,10 @@ const EventModal: React.FC<EventModalProps> = ({
           {!existingEvent || isEditing ? (
             <form onSubmit={handleSubmit} className="space-y-4">
                <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Data do Evento</label>
-                {!existingEvent ? (
-                  <div className="space-y-2">
-                    <input
-                      type="text"
-                      required
-                      placeholder="DD/MM/YYYY"
-                      value={dateInputValue}
-                      onChange={handleDateChange}
-                      maxLength="10"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center font-mono text-lg tracking-widest"
-                    />
-                    {chosenDate && (
-                      <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-md border border-green-200">
-                        ✓ Data selecionada: <span className="font-semibold">{formatDateBR(chosenDate)}</span>
-                      </div>
-                    )}
-                    {!chosenDate && dateInputValue && (
-                      <div className="text-sm text-red-700 bg-red-50 px-3 py-2 rounded-md border border-red-200">
-                        ✗ Data inválida. Use formato DD/MM/YYYY
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-gray-900 font-semibold bg-gray-50 px-3 py-2 rounded-md">
-                    {formatDateBR(existingEvent?.date)}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Horário do Evento</label>
-                {!existingEvent ? (
-                  <input
-                    type="time"
-                    required
-                    value={chosenTime}
-                    onChange={(e) => setChosenTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                ) : (
-                  <div className="text-gray-900 font-semibold bg-gray-50 px-3 py-2 rounded-md">
-                    {existingEvent.time}
-                  </div>
-                )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                <div className="text-gray-900 font-semibold">
+                  {selectedDate?.split('-').reverse().join('/') || existingEvent?.date.split('-').reverse().join('/')}
+                </div>
               </div>
 
               <div>
@@ -222,16 +126,6 @@ const EventModal: React.FC<EventModalProps> = ({
                   placeholder="Detalhes sobre o evento..."
                 />
               </div>
-
-              {conflictError && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex gap-3">
-                  <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
-                  <div>
-                    <p className="text-sm font-semibold text-red-800">Conflito de Horário</p>
-                    <p className="text-sm text-red-700 mt-1">{conflictError}</p>
-                  </div>
-                </div>
-              )}
 
               <div className="flex justify-between items-center pt-2">
                  {existingEvent && isAdmin && (
@@ -273,11 +167,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   <>
                     <div>
                         <p className="text-sm text-gray-500">Data</p>
-                        <p className="font-medium text-gray-900">{formatDateBR(existingEvent.date)}</p>
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-500">Horário</p>
-                        <p className="font-medium text-gray-900">{existingEvent.time}</p>
+                        <p className="font-medium text-gray-900">{existingEvent.date.split('-').reverse().join('/')}</p>
                     </div>
                     <div>
                         <p className="text-sm text-gray-500">Título</p>

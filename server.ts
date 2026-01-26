@@ -9,10 +9,6 @@ const __dirname = path.dirname(__filename);
 
 const app: Express = express();
 const PORT = 3001;
-
-// Usa db.json em desenvolvimento, caso contrário usa data/
-const USE_DB_JSON = true; // Mudado para true para usar db.json
-const DB_FILE = path.join(__dirname, 'db.json');
 const DATA_DIR = path.join(__dirname, 'data');
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
@@ -66,11 +62,6 @@ const ensureDataFiles = () => {
 
 const readEvents = () => {
   try {
-    if (USE_DB_JSON && fs.existsSync(DB_FILE)) {
-      const data = fs.readFileSync(DB_FILE, 'utf-8');
-      const parsed = JSON.parse(data);
-      return parsed.events || [];
-    }
     const data = fs.readFileSync(EVENTS_FILE, 'utf-8');
     return JSON.parse(data);
   } catch {
@@ -80,11 +71,6 @@ const readEvents = () => {
 
 const readUsers = () => {
   try {
-    if (USE_DB_JSON && fs.existsSync(DB_FILE)) {
-      const data = fs.readFileSync(DB_FILE, 'utf-8');
-      const parsed = JSON.parse(data);
-      return parsed.users || [];
-    }
     const data = fs.readFileSync(USERS_FILE, 'utf-8');
     return JSON.parse(data);
   } catch {
@@ -93,31 +79,11 @@ const readUsers = () => {
 };
 
 const writeEvents = (events: any) => {
-  if (USE_DB_JSON) {
-    const dbPath = DB_FILE;
-    let data: any = {};
-    if (fs.existsSync(dbPath)) {
-      data = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
-    }
-    data.events = events;
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-  } else {
-    fs.writeFileSync(EVENTS_FILE, JSON.stringify(events, null, 2));
-  }
+  fs.writeFileSync(EVENTS_FILE, JSON.stringify(events, null, 2));
 };
 
 const writeUsers = (users: any) => {
-  if (USE_DB_JSON) {
-    const dbPath = DB_FILE;
-    let data: any = {};
-    if (fs.existsSync(dbPath)) {
-      data = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
-    }
-    data.users = users;
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-  } else {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-  }
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 };
 
 // Rotas de Eventos
@@ -253,9 +219,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // Inicializa servidor
-if (!USE_DB_JSON) {
-  ensureDataFiles();
-}
+ensureDataFiles();
 
 app.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════════════════════════╗`);
@@ -263,15 +227,10 @@ app.listen(PORT, () => {
   console.log(`║     Servidor de Dados EventFlow iniciado                  ║`);
   console.log(`║     Porta: ${PORT}                                                  ║`);
   console.log(`║     URL: http://localhost:${PORT}                                  ║`);
-  console.log(`║     Banco de dados: ${USE_DB_JSON ? 'db.json' : 'data/'}                             ║`);
   console.log(`║                                                            ║`);
-  if (!USE_DB_JSON) {
-    console.log(`║     Arquivos:                                             ║`);
-    console.log(`║     - ${path.relative(process.cwd(), USERS_FILE)}                      ║`);
-    console.log(`║     - ${path.relative(process.cwd(), EVENTS_FILE)}                     ║`);
-  } else {
-    console.log(`║     ${path.relative(process.cwd(), DB_FILE)}                                 ║`);
-  }
+  console.log(`║     Banco de dados JSON:                                  ║`);
+  console.log(`║     - ${path.relative(process.cwd(), USERS_FILE)}                      ║`);
+  console.log(`║     - ${path.relative(process.cwd(), EVENTS_FILE)}                     ║`);
   console.log(`║                                                            ║`);
   console.log(`╚════════════════════════════════════════════════════════════╝\n`);
 });

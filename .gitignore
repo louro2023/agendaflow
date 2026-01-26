@@ -17,10 +17,9 @@ dist-ssr
 .env.local
 .env.*.local
 
-# Database files - NEVER COMMIT (apenas para desenvolvimiento)
+# Database files - NEVER COMMIT (Firebase and Local Data)
 data/users.json
 data/events.json
-db.json
 services/firebase.ts
 
 # Build and dependencies
