@@ -1,39 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { Calendar, Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
-import { BrandingService, BrandingConfig } from '../services/brandingService';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [branding, setBranding] = useState<BrandingConfig | null>(null);
-  const [brandingLoading, setBrandingLoading] = useState(true);
   
   const { login } = useAuth();
   const { addToast } = useToast();
   const { events } = useData();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    loadBranding();
-  }, []);
-
-  const loadBranding = async () => {
-    try {
-      const config = await BrandingService.getLogo();
-      setBranding(config);
-    } catch (error) {
-      console.error('Erro ao carregar branding:', error);
-    } finally {
-      setBrandingLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,19 +44,13 @@ const Login: React.FC = () => {
       {/* Header com Logo */}
       <div className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-white/10 px-4 md:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
-          {!brandingLoading && branding?.logoUrl ? (
-            <img src={branding.logoUrl} alt="Logo" className="h-12 w-auto" />
-          ) : (
-            <>
-              <div className="p-2 bg-white rounded-lg shadow-sm">
-                <Calendar size={24} className="text-indigo-600" strokeWidth={2.5} />
-              </div>
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold text-gray-900">Agenda ADNI ITAIPU</h1>
-                <p className="text-xs text-gray-600">Agenda de Eventos ADNI ITAIPU</p>
-              </div>
-            </>
-          )}
+          <div className="p-2 bg-white rounded-lg shadow-sm">
+            <Calendar size={24} className="text-indigo-600" strokeWidth={2.5} />
+          </div>
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">EventFlow</h1>
+            <p className="text-xs text-gray-600">Sistema de Gestão de Eventos</p>
+          </div>
           <div className="ml-auto">
             <button
               onClick={() => setShowLoginForm(!showLoginForm)}

@@ -1,30 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, Users, LogOut, Menu, X, ListTodo } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { BrandingService, BrandingConfig } from '../services/brandingService';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { logout, currentUser, isAdmin } = useAuth();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [branding, setBranding] = useState<BrandingConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadBranding();
-  }, []);
-
-  const loadBranding = async () => {
-    try {
-      const config = await BrandingService.getLogo();
-      setBranding(config);
-    } catch (error) {
-      console.error('Erro ao carregar branding:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const NavItem = ({ to, icon: Icon, label }: { to: string, icon: any, label: string }) => {
     const isActive = location.pathname === to;
@@ -49,14 +31,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2 text-indigo-600">
-            {!loading && branding?.logoUrl ? (
-              <img src={branding.logoUrl} alt="Logo" className="h-8 w-auto" />
-            ) : (
-              <>
-                <Calendar size={24} strokeWidth={2.5} />
-                <span className="text-lg font-bold tracking-tight">Agenda ADNI ITAIPU</span>
-              </>
-            )}
+            <Calendar size={24} strokeWidth={2.5} />
+            <span className="text-lg font-bold tracking-tight">EventFlow</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -80,20 +56,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-8 hidden md:block">
-          <div className="flex items-center gap-3">
-            {!loading && branding?.logoUrl ? (
-              <img src={branding.logoUrl} alt="Logo" className="h-12 w-auto" />
-            ) : (
-              <>
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <Calendar size={24} strokeWidth={2.5} />
-                </div>
-                <div>
-                  <span className="text-2xl font-bold tracking-tight text-gray-800">Agenda ADNI ITAIPU</span>
-                  <p className="text-xs text-indigo-600 font-semibold">Agenda de Eventos ADNI ITAIPU</p>
-                </div>
-              </>
-            )}
+          <div className="flex items-center gap-2 text-indigo-600">
+            <div className="p-2 bg-indigo-100 rounded-lg">
+               <Calendar size={24} strokeWidth={2.5} />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-gray-800">EventFlow</span>
           </div>
         </div>
 

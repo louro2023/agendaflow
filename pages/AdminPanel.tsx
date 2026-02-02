@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
 import { User, UserRole, EventStatus } from '../types';
-import { Check, X, ShieldAlert, User as UserIcon, Power, TrendingUp, Users, Calendar, AlertCircle, Image, Trash2, Download } from 'lucide-react';
+import { Check, X, ShieldAlert, User as UserIcon, Power, TrendingUp, Users, Calendar, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BrandingService, BrandingConfig } from '../services/brandingService';
 
 const AdminPanel: React.FC = () => {
   const { events, users, updateEventStatus, addUser, updateUser, toggleUserStatus } = useData();
@@ -14,10 +13,8 @@ const AdminPanel: React.FC = () => {
   const { addToast } = useToast();
   const navigate = useNavigate();
   
-  const [activeTab, setActiveTab] = useState<'events' | 'users' | 'branding'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'users'>('events');
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  const [branding, setBranding] = useState<BrandingConfig | null>(null);
-  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   
   // User Form State
   const [userName, setUserName] = useState('');
@@ -25,59 +22,6 @@ const AdminPanel: React.FC = () => {
   const [userPassword, setUserPassword] = useState('');
   const [userRole, setUserRole] = useState<UserRole>(UserRole.COMMON);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
-
-  // Load branding on mount
-  useEffect(() => {
-    loadBranding();
-  }, []);
-
-  const loadBranding = async () => {
-    try {
-      const config = await BrandingService.getLogo();
-      setBranding(config);
-    } catch (error) {
-      console.error('Erro ao carregar branding:', error);
-    }
-  };
-
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const validation = BrandingService.validateImage(file);
-    if (!validation.valid) {
-      addToast(validation.error || 'Erro na validação da imagem', 'error');
-      return;
-    }
-
-    try {
-      setIsUploadingLogo(true);
-      const base64 = await BrandingService.fileToBase64(file);
-      await BrandingService.saveLogo(base64);
-      await loadBranding();
-      addToast('Logo atualizada com sucesso!', 'success');
-    } catch (error) {
-      console.error('Erro ao salvar logo:', error);
-      addToast('Erro ao salvar logo', 'error');
-    } finally {
-      setIsUploadingLogo(false);
-      // Reset input
-      e.target.value = '';
-    }
-  };
-
-  const handleClearLogo = async () => {
-    if (window.confirm('Deseja remover a logo customizada?')) {
-      try {
-        await BrandingService.clearLogo();
-        await loadBranding();
-        addToast('Logo removida com sucesso!', 'success');
-      } catch (error) {
-        console.error('Erro ao remover logo:', error);
-        addToast('Erro ao remover logo', 'error');
-      }
-    }
-  };
 
   if (!isAdmin) {
     return (
@@ -157,8 +101,8 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Painel Administrativo - Agenda ADNI ITAIPU</h1>
-        <p className="text-gray-500">Gerencie usuários, aprovações e branding do sistema.</p>
+        <h1 className="text-2xl font-bold text-gray-800">Painel Administrativo</h1>
+        <p className="text-gray-500">Gerencie usuários e aprovações do sistema.</p>
       </div>
 
       {/* Stats Grid */}
@@ -177,7 +121,7 @@ const AdminPanel: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2 bg-white p-1.5 rounded-xl shadow-sm border border-gray-100 w-fit">
+      <div className="flex space-x-2 bg-white p-1.5 rounded-xl shadow-sm border border-gray-100 w-fit">
         <button
           onClick={() => setActiveTab('events')}
           className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all ${
@@ -195,15 +139,6 @@ const AdminPanel: React.FC = () => {
         >
           <Users size={18} />
           Gerenciar Usuários
-        </button>
-        <button
-          onClick={() => setActiveTab('branding')}
-          className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-            activeTab === 'branding' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-          }`}
-        >
-          <Image size={18} />
-          Branding
         </button>
       </div>
 
@@ -337,84 +272,7 @@ const AdminPanel: React.FC = () => {
               </table>
             </div>
           </div>
-        ) : activeTab === 'branding' ? (
-          <div className="p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-6">Configurações de Branding</h2>
-            
-            <div className="space-y-6">
-              {/* Logo Preview */}
-              <div className="bg-gray-50/50 rounded-xl p-8 border border-gray-200">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Logo Atual</p>
-                <div className="flex items-center justify-center h-40 bg-white rounded-lg border border-gray-100 overflow-hidden">
-                  {branding?.logoUrl ? (
-                    <img 
-                      src={branding.logoUrl} 
-                      alt="Logo" 
-                      className="max-h-full max-w-full object-contain p-4"
-                    />
-                  ) : (
-                    <div className="text-center text-gray-400">
-                      <Image size={48} className="mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">Nenhuma logo customizada</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Logo Upload */}
-              <div className="bg-gray-50/50 rounded-xl p-6 border border-gray-200">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Fazer Upload de Logo</p>
-                <div className="relative">
-                  <input
-                    type="file"
-                    id="logo-upload"
-                    accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                    onChange={handleLogoUpload}
-                    disabled={isUploadingLogo}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="logo-upload"
-                    className={`flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-white transition ${
-                      isUploadingLogo ? 'opacity-50 cursor-not-allowed' : 'hover:border-indigo-400'
-                    }`}
-                  >
-                    <Image size={32} className="text-gray-400 mb-2" />
-                    <p className="text-sm font-medium text-gray-700">Clique ou arraste a imagem aqui</p>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPEG, SVG ou WebP (Máx 2MB)</p>
-                    {isUploadingLogo && <p className="text-xs text-indigo-600 font-semibold mt-2">Enviando...</p>}
-                  </label>
-                </div>
-              </div>
-
-              {/* App Info */}
-              <div className="bg-indigo-50/50 rounded-xl p-6 border border-indigo-100">
-                <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-4">Informações da Aplicação</p>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-indigo-100">
-                    <span className="text-sm text-gray-600">Nome da Aplicação:</span>
-                    <span className="text-sm font-semibold text-gray-900">Agenda ADNI ITAIPU</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-sm text-gray-600">Versão:</span>
-                    <span className="text-sm font-semibold text-gray-900">{branding?.appVersion || '2.0 ADNI ITAIPU'}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              {branding?.logoUrl && (
-                <button
-                  onClick={handleClearLogo}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition"
-                >
-                  <Trash2 size={18} />
-                  Remover Logo Customizada
-                </button>
-              )}
-            </div>
-          </div>
-        ) : null}
+        )}
       </div>
 
       {/* User Modal */}
