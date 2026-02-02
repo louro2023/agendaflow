@@ -5,8 +5,8 @@ import { Calendar, Lock, Mail, ArrowRight } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('admin@demo.com');
-  const [password, setPassword] = useState('123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
   const { login } = useAuth();
@@ -61,8 +61,8 @@ const Login: React.FC = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-gray-50 focus:bg-white"
-                            placeholder="seu@email.com"
+                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-transparent placeholder-gray-400"
+                            placeholder="Preencha seu Email"
                         />
                     </div>
                 </div>
@@ -78,8 +78,8 @@ const Login: React.FC = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-gray-50 focus:bg-white"
-                            placeholder="••••••••"
+                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-transparent placeholder-gray-400"
+                            placeholder="Preencha sua Senha"
                         />
                     </div>
                 </div>
