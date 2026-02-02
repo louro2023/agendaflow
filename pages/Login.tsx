@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { Calendar, Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
 
@@ -44,11 +44,9 @@ const Login: React.FC = () => {
       {/* Header com Logo */}
       <div className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-white/10 px-4 md:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
-          <div className="p-2 bg-white rounded-lg shadow-sm">
-            <Calendar size={24} className="text-indigo-600" strokeWidth={2.5} />
-          </div>
+          <img src="/logosistema.png" alt="Logo ADNI" className="h-10 md:h-12 w-auto" />
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">EventFlow</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Agenda ADNI</h1>
             <p className="text-xs text-gray-600">Sistema de Gestão de Eventos</p>
           </div>
           <div className="ml-auto">

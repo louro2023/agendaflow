@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, Users, LogOut, Menu, X, ListTodo } from 'lucide-react';
+import { Users, LogOut, Menu, X, ListTodo, Calendar } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -30,9 +30,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="min-h-screen flex bg-[#F8FAFC]">
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2 text-indigo-600">
-            <Calendar size={24} strokeWidth={2.5} />
-            <span className="text-lg font-bold tracking-tight">EventFlow</span>
+        <div className="flex items-center gap-2">
+            <img src="/logosistema.png" alt="Logo" className="h-8 w-auto" />
+            <span className="text-lg font-bold tracking-tight text-gray-800">Agenda ADNI</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -56,11 +56,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-8 hidden md:block">
-          <div className="flex items-center gap-2 text-indigo-600">
-            <div className="p-2 bg-indigo-100 rounded-lg">
-               <Calendar size={24} strokeWidth={2.5} />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-gray-800">EventFlow</span>
+          <div className="flex items-center gap-2">
+            <img src="/logosistema.png" alt="Logo ADNI" className="h-12 w-auto" />
+            <span className="text-2xl font-bold tracking-tight text-gray-800">Agenda ADNI</span>
           </div>
         </div>
 
