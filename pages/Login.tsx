@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-display font-bold text-white">ADNI ITAIPU</h1>
-            <p className="text-xs text-white/80">Sistema de Gestão de Agenda de Eventos</p>
+            <p className="text-xs text-white/80">Gestão de Agenda de Eventos</p>
           </div>
           <div className="ml-auto">
             <button
