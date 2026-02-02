@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, Users, LogOut, Menu, X, ListTodo } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import logoSistema from '/logosistema.png';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { logout, currentUser, isAdmin } = useAuth();
@@ -30,9 +31,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="min-h-screen flex bg-[#F8FAFC]">
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2 text-indigo-600">
-            <Calendar size={24} strokeWidth={2.5} />
-            <span className="text-lg font-bold tracking-tight">EventFlow</span>
+        <div className="flex items-center gap-2">
+            <img src={logoSistema} alt="ADNI Itaipu" className="h-8 w-8" />
+            <span className="text-lg font-bold tracking-tight">ADNI Itaipu</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -56,9 +57,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-8 hidden md:block">
-          <div className="flex items-center gap-2 text-indigo-600">
+          <div className="flex items-center gap-2">
             <div className="p-2 bg-indigo-100 rounded-lg">
-               <Calendar size={24} strokeWidth={2.5} />
+               <img src={logoSistema} alt="ADNI Itaipu" className="h-6 w-6" />
             </div>
             <span className="text-2xl font-bold tracking-tight text-gray-800">ADNI Itaipu</span>
           </div>
