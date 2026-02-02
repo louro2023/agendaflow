@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../context/DataContext';
 import { Calendar, Lock, Mail, ArrowRight } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import PublicEventsViewer from '../components/PublicEventsViewer';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +13,7 @@ const Login: React.FC = () => {
   
   const { login } = useAuth();
   const { addToast } = useToast();
+  const { events } = useData();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,27 +100,28 @@ const Login: React.FC = () => {
 
         </div>
 
-        {/* Right Side (Image/Decoration) */}
-        <div className="hidden md:block w-1/2 bg-indigo-50 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/90 to-purple-600/90 z-10"></div>
-            <img 
-                src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068&auto=format&fit=crop" 
-                alt="Office planning" 
-                className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50"
-            />
+        {/* Right Side (Events Preview) */}
+        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 relative overflow-hidden flex-col p-12">
+            {/* Background decorative elements */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+              <div className="absolute bottom-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+            </div>
             
-            <div className="relative z-20 h-full flex flex-col justify-center p-12 text-white">
-                <h2 className="text-3xl font-bold mb-4">Organize seus eventos com eficiência</h2>
-                <p className="text-indigo-100 leading-relaxed text-lg">
-                    EventFlow é a solução completa para gerenciamento de agendas corporativas. 
-                    Controle permissões, aprove solicitações e mantenha todos sincronizados.
-                </p>
-                
-                <div className="mt-8 flex gap-2">
-                    <div className="w-12 h-1.5 bg-white rounded-full opacity-100"></div>
-                    <div className="w-3 h-1.5 bg-white rounded-full opacity-40"></div>
-                    <div className="w-3 h-1.5 bg-white rounded-full opacity-40"></div>
-                </div>
+            {/* Content */}
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
+                <p className="text-indigo-100 text-sm">Visualize os eventos agendados para os próximos dias</p>
+              </div>
+
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <PublicEventsViewer events={events} />
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/20">
+                <p className="text-xs text-indigo-100 text-center">Faça login para gerenciar seus eventos</p>
+              </div>
             </div>
         </div>
       </div>

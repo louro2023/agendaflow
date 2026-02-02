@@ -14,7 +14,16 @@ const AllEvents: React.FC = () => {
 
   // Filtrar e ordenar eventos
   const filteredEvents = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     let result = [...events];
+
+    // Filtrar apenas eventos da data atual para frente
+    result = result.filter(e => {
+      const eventDate = new Date(e.date);
+      return eventDate >= today;
+    });
 
     // Filtro por status
     if (statusFilter !== 'all') {
