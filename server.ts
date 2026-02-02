@@ -260,7 +260,7 @@ if (!USE_DB_JSON) {
 app.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════════════════════════╗`);
   console.log(`║                                                            ║`);
-  console.log(`║     Servidor de Dados EventFlow iniciado                  ║`);
+  console.log(`║     Servidor de Dados ADNI Itaipu iniciado               ║`);
   console.log(`║     Porta: ${PORT}                                                  ║`);
   console.log(`║     URL: http://localhost:${PORT}                                  ║`);
   console.log(`║     Banco de dados: ${USE_DB_JSON ? 'db.json' : 'data/'}                             ║`);

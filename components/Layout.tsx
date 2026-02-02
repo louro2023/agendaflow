@@ -60,7 +60,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div className="p-2 bg-indigo-100 rounded-lg">
                <Calendar size={24} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-gray-800">EventFlow</span>
+            <span className="text-2xl font-bold tracking-tight text-gray-800">ADNI Itaipu</span>
           </div>
         </div>
 

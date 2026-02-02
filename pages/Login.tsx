@@ -48,8 +48,8 @@ const Login: React.FC = () => {
             <Calendar size={24} className="text-indigo-600" strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">EventFlow</h1>
-            <p className="text-xs text-gray-600">Sistema de Gestão de Eventos</p>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">ADNI Itaipu</h1>
+            <p className="text-xs text-gray-600">Sistema de Gestão de Agenda</p>
           </div>
           <div className="ml-auto">
             <button
@@ -68,8 +68,8 @@ const Login: React.FC = () => {
         <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-6xl mx-auto">
             <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Próximos Eventos Agendados</h2>
-              <p className="text-gray-600 text-lg">Confira os eventos que estão por vir</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Agenda Corporativa</h2>
+              <p className="text-gray-600 text-lg">Confira a agenda de compromissos e reuniões agendadas</p>
             </div>
 
             {/* Events List */}
@@ -118,7 +118,7 @@ const Login: React.FC = () => {
               ) : (
                 <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                   <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 text-lg">Nenhum evento agendado para os próximos dias</p>
+                  <p className="text-gray-500 text-lg">Nenhuma atividade agendada para os próximos dias</p>
                 </div>
               )}
             </div>
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
                 <Calendar size={28} />
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Bem-vindo</h2>
-              <p className="text-gray-500">Insira suas credenciais para acessar a agenda.</p>
+              <p className="text-gray-500">Insira suas credenciais para acessar o sistema.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
