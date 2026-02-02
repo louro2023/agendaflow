@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
 import AllEvents from './pages/AllEvents';
+import PublicAllEvents from './pages/PublicAllEvents';
 import Login from './pages/Login';
 import { Loader2 } from 'lucide-react';
 
@@ -36,6 +37,7 @@ const AppContent = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/eventos-publicos" element={<PublicAllEvents />} />
       <Route
         path="/"
         element={

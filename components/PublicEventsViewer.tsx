@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formatDateBR } from '../utils/dateFormatter';
 import { EventStatus, EventRequest } from '../types';
-import { Calendar, Clock, User, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, User, CheckCircle2, AlertCircle, XCircle, ArrowRight } from 'lucide-react';
 
 interface PublicEventsViewerProps {
   events: EventRequest[];
 }
 
 const PublicEventsViewer: React.FC<PublicEventsViewerProps> = ({ events }) => {
+  const navigate = useNavigate();
   // Filtrar apenas eventos futuros
   const upcomingEvents = useMemo(() => {
     const today = new Date();
@@ -107,9 +109,13 @@ const PublicEventsViewer: React.FC<PublicEventsViewerProps> = ({ events }) => {
       ))}
 
       {events.length > 5 && upcomingEvents.length === 5 && (
-        <p className="text-center text-xs text-gray-500 pt-2">
-          ... e mais eventos agendados
-        </p>
+        <button
+          onClick={() => navigate('/eventos-publicos')}
+          className="w-full mt-4 px-4 py-2.5 bg-white/30 hover:bg-white/50 border border-white/60 text-white rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 group"
+        >
+          Veja todos os eventos agendados
+          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        </button>
       )}
     </div>
   );
