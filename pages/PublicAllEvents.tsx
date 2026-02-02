@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { formatDateBR } from '../utils/dateFormatter';
 import { EventStatus, EventRequest } from '../types';
 import { Search, Calendar, Clock, User, CheckCircle2, AlertCircle, XCircle, ArrowLeft, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BrandingService, BrandingConfig } from '../services/brandingService';
 
 const PublicAllEvents: React.FC = () => {
   const { events } = useData();
@@ -11,6 +12,23 @@ const PublicAllEvents: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<EventStatus | 'all'>('all');
   const [sortBy, setSortBy] = useState<'date' | 'title'>('date');
+  const [branding, setBranding] = useState<BrandingConfig | null>(null);
+  const [brandingLoading, setBrandingLoading] = useState(true);
+
+  useEffect(() => {
+    loadBranding();
+  }, []);
+
+  const loadBranding = async () => {
+    try {
+      const config = await BrandingService.getLogo();
+      setBranding(config);
+    } catch (error) {
+      console.error('Erro ao carregar branding:', error);
+    } finally {
+      setBrandingLoading(false);
+    }
+  };
 
   // Filtrar e ordenar eventos
   const filteredEvents = useMemo(() => {
@@ -99,10 +117,14 @@ const PublicAllEvents: React.FC = () => {
           </button>
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <Calendar className="text-indigo-600" size={32} />
-              <h1 className="text-4xl font-bold text-gray-900">Todos os Eventos</h1>
+              {!brandingLoading && branding?.logoUrl ? (
+                <img src={branding.logoUrl} alt="Logo" className="h-8 w-auto" />
+              ) : (
+                <Calendar className="text-indigo-600" size={32} />
+              )}
+              <h1 className="text-4xl font-bold text-gray-900">Agenda ADNI ITAIPU</h1>
             </div>
-            <p className="text-gray-600">Visualize todos os eventos agendados para os próximos dias</p>
+            <p className="text-gray-600">Agenda de Eventos ADNI ITAIPU - Visualize todos os eventos agendados para os próximos dias</p>
           </div>
         </div>
 

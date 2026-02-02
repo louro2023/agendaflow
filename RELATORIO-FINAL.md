@@ -21,7 +21,8 @@
 - ✅ Funciona offline com localStorage
 - ✅ Dados salvos permanentemente
 - ✅ Fácil backup e restauração
-
+Agenda ADNI
+ITAIPU
 ---
 
 ## 📦 O QUE FOI CRIADO
