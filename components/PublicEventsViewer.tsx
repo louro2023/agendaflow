@@ -73,16 +73,8 @@ const PublicEventsViewer: React.FC<PublicEventsViewerProps> = ({ events }) => {
           key={event.id}
           className="bg-white/50 backdrop-blur-sm rounded-lg border border-white/60 hover:bg-white/70 transition-all p-4"
         >
-          <div className="flex items-start justify-between gap-3 mb-2">
+          <div className="flex items-start gap-3 mb-2">
             <h4 className="font-semibold text-gray-900 text-sm flex-1">{event.title}</h4>
-            <div
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium border ${getStatusColor(
-                event.status
-              )}`}
-            >
-              {getStatusIcon(event.status)}
-              {getStatusLabel(event.status)}
-            </div>
           </div>
 
           <p className="text-gray-600 text-xs mb-3 line-clamp-1">{event.description}</p>
