@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, Users, LogOut, Menu, X } from 'lucide-react';
+import { Calendar, Users, LogOut, Menu, X, ListTodo } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -67,6 +67,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="flex-1 px-4 py-4 md:py-0 space-y-2 overflow-y-auto mt-16 md:mt-0">
           <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Menu Principal</p>
           <NavItem to="/" icon={Calendar} label="Minha Agenda" />
+          <NavItem to="/eventos" icon={ListTodo} label="Todos os Eventos" />
           {isAdmin && (
             <NavItem to="/admin" icon={Users} label="Painel Administrativo" />
           )}

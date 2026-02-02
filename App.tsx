@@ -6,6 +6,7 @@ import { ToastProvider } from './context/ToastContext';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
+import AllEvents from './pages/AllEvents';
 import Login from './pages/Login';
 import { Loader2 } from 'lucide-react';
 
@@ -48,6 +49,14 @@ const AppContent = () => {
         element={
           <ProtectedRoute>
             <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/eventos"
+        element={
+          <ProtectedRoute>
+            <AllEvents />
           </ProtectedRoute>
         }
       />
