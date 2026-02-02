@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-display font-bold text-white">ADNI ITAIPU</h1>
-            <p className="text-xs text-white/80">Sistema de Gestão de Agenda Corporativa</p>
+            <p className="text-xs text-white/80">Sistema de Gestão de Agenda de Eventos</p>
           </div>
           <div className="ml-auto">
             <button
@@ -65,11 +65,11 @@ const Login: React.FC = () => {
       {/* Main Content */}
       {!showLoginForm ? (
         /* Public Events View */
-        <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-8 wave-background">
           <div className="max-w-6xl mx-auto">
             <div className="mb-8">
-              <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-3">Agenda Corporativa</h2>
-              <p className="text-gray-700 text-lg font-body">Confira a agenda de compromissos e reuniões agendadas</p>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-3">Agenda de Eventos</h2>
+              <p className="text-gray-700 text-lg font-body">Confira todos os eventos e reuniões agendadas</p>
             </div>
 
             {/* Events List */}
@@ -126,19 +126,19 @@ const Login: React.FC = () => {
         </div>
       ) : (
         /* Login Form View */
-        <div className="relative z-10 flex-1 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 md:p-10 border border-amber-100">
+        <div className="relative z-10 flex-1 flex items-center justify-center p-4 wave-background">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 md:p-10 border border-gray-200">
             <div className="mb-10">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-adni-laranja mb-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange-100 text-orange-600 mb-4">
                 <Calendar size={28} />
               </div>
-              <h2 className="text-3xl font-bold text-adni-marrom mb-2">Bem-vindo</h2>
-              <p className="text-gray-600">Insira suas credenciais para acessar o sistema.</p>
+              <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">Bem-vindo</h2>
+              <p className="text-gray-600 font-body">Insira suas credenciais para acessar o sistema.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1">
-                <label className="text-sm font-semibold text-gray-600">Email Corporativo</label>
+                <label className="text-sm font-display font-semibold text-gray-700">Email Corporativo</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Mail size={18} />
@@ -148,14 +148,14 @@ const Login: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-adni-ouro/20 focus:border-adni-laranja transition outline-none bg-transparent placeholder-gray-400"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition outline-none bg-transparent placeholder-gray-400"
                     placeholder="Preencha seu Email"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-semibold text-gray-600">Senha</label>
+                <label className="text-sm font-display font-semibold text-gray-700">Senha</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Lock size={18} />
@@ -165,7 +165,7 @@ const Login: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-adni-ouro/20 focus:border-adni-laranja transition outline-none bg-transparent placeholder-gray-400"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition outline-none bg-transparent placeholder-gray-400"
                     placeholder="Preencha sua Senha"
                   />
                 </div>
@@ -174,7 +174,7 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3.5 px-4 bg-adni-gradient text-white font-bold rounded-xl shadow-lg shadow-adni-laranja/30 hover:shadow-adni-laranja/50 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full py-3.5 px-4 bg-adni-gradient text-white font-display font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all transform hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {loading ? 'Processando...' : 'Acessar Sistema'}
                 {!loading && <ArrowRight size={18} />}

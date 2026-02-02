@@ -249,44 +249,44 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-500 wave-background">
       {/* Welcome & Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-           <h2 className="text-2xl font-bold text-gray-800">Olá, {currentUser?.name.split(' ')[0]} 👋</h2>
-           <p className="text-gray-500">Aqui está a visão geral da agenda.</p>
+           <h2 className="text-2xl font-display font-bold text-gray-800">Olá, {currentUser?.name.split(' ')[0]} 👋</h2>
+           <p className="text-gray-600 font-body">Aqui está a visão geral da agenda.</p>
         </div>
       </div>
 
       {/* Calendar Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100 relative z-20">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-soft border border-gray-200 relative z-20">
         <div className="relative">
           <button 
             onClick={toggleDatePicker}
-            className="flex items-center gap-3 group hover:bg-gray-50 px-3 py-2 -ml-2 rounded-xl transition-all"
+            className="flex items-center gap-3 group hover:bg-orange-50 px-3 py-2 -ml-2 rounded-xl transition-all duration-300 hover:-translate-y-1"
           >
-            <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <div className="bg-orange-100 p-2 rounded-lg text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
                 <CalendarDays size={20} />
             </div>
-            <h1 className="text-xl font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">
+            <h1 className="text-xl font-display font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
               {format(currentDate, 'MMMM yyyy', { locale: ptBR }).replace(/^\w/, c => c.toUpperCase())}
             </h1>
             <ChevronDown 
               size={18} 
-              className={`text-gray-400 group-hover:text-indigo-600 transition-transform duration-200 ${isDatePickerOpen ? 'rotate-180' : ''}`} 
+              className={`text-gray-400 group-hover:text-orange-600 transition-transform duration-200 ${isDatePickerOpen ? 'rotate-180' : ''}`} 
             />
           </button>
 
           {isDatePickerOpen && (
-            <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-50 w-80 animate-in fade-in zoom-in-95 duration-200 origin-top-left ring-1 ring-black ring-opacity-5">
-              <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+            <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 p-4 z-50 w-80 animate-in fade-in zoom-in-95 duration-200 origin-top-left ring-1 ring-black ring-opacity-5">
+              <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200">
                 <button 
                   onClick={(e) => { e.stopPropagation(); setPickerYear(y => y - 1); }} 
                   className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 transition"
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <span className="font-bold text-lg text-gray-800">{pickerYear}</span>
+                <span className="font-display font-bold text-lg text-gray-800">{pickerYear}</span>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setPickerYear(y => y + 1); }} 
                   className="p-1 hover:bg-gray-100 rounded-lg text-gray-500 transition"
