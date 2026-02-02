@@ -40,8 +40,8 @@ const Login: React.FC = () => {
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-indigo-600 to-purple-700 transform -skew-y-6 -translate-y-24 z-0"></div>
       
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-500">
-        
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden relative z-10 animate-in fade-in zoom-in-95 duration-500">
+        <div className="flex flex-col md:flex-row">
         {/* Left Side (Form) */}
         <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
             <div className="mb-10">
@@ -96,12 +96,10 @@ const Login: React.FC = () => {
                     {!loading && <ArrowRight size={18} />}
                 </button>
             </form>
-
-
         </div>
 
-        {/* Right Side (Events Preview) */}
-        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 relative overflow-hidden flex-col p-12">
+        {/* Right Side (Events Preview) - Desktop e Mobile */}
+        <div className="w-full md:w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 relative overflow-hidden flex-col p-8 md:p-12 flex">
             {/* Background decorative elements */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
@@ -110,19 +108,20 @@ const Login: React.FC = () => {
             
             {/* Content */}
             <div className="relative z-10 flex flex-col h-full">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
+              <div className="mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
                 <p className="text-indigo-100 text-sm">Visualize os eventos agendados para os próximos dias</p>
               </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar">
+              <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
                 <PublicEventsViewer events={events} />
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/20">
+              <div className="mt-6 md:mt-8 pt-6 border-t border-white/20">
                 <p className="text-xs text-indigo-100 text-center">Faça login para gerenciar seus eventos</p>
               </div>
             </div>
+        </div>
         </div>
       </div>
       
