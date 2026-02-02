@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, Users, LogOut, Menu, X, ListTodo } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import logoSistema from '/logosistema.png';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { logout, currentUser, isAdmin } = useAuth();
@@ -17,11 +16,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         onClick={() => setIsMobileMenuOpen(false)}
         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
           isActive 
-            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 font-medium' 
-            : 'text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'
+            ? 'bg-adni-gradient text-white shadow-lg shadow-adni-laranja/30 font-medium' 
+            : 'text-gray-500 hover:bg-amber-50 hover:text-adni-laranja'
         }`}
       >
-        <Icon size={20} className={isActive ? 'text-white' : 'text-gray-400 group-hover:text-indigo-600'} />
+        <Icon size={20} className={isActive ? 'text-white' : 'text-gray-400 group-hover:text-adni-laranja'} />
         <span>{label}</span>
       </Link>
     );
@@ -31,9 +30,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="min-h-screen flex bg-[#F8FAFC]">
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2">
-            <img src={logoSistema} alt="ADNI Itaipu" className="h-8 w-8" />
-            <span className="text-lg font-bold tracking-tight">ADNI Itaipu</span>
+        <div className="flex items-center gap-2 text-adni-laranja">
+            <Calendar size={24} strokeWidth={2.5} />
+            <span className="text-lg font-bold tracking-tight text-adni-marrom">ADNI ITAIPU</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -57,11 +56,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-8 hidden md:block">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-indigo-100 rounded-lg">
-               <img src={logoSistema} alt="ADNI Itaipu" className="h-6 w-6" />
+          <div className="flex items-center gap-2 text-adni-laranja">
+            <div className="p-2 bg-adni-ouro rounded-lg">
+               <Calendar size={24} strokeWidth={2.5} className="text-adni-marrom" />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-gray-800">ADNI Itaipu</span>
+            <span className="text-2xl font-bold tracking-tight text-adni-marrom">ADNI ITAIPU</span>
           </div>
         </div>
 
@@ -96,7 +95,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="p-4 border-t border-gray-100 mb-safe">
           <button
             onClick={logout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 font-medium group"
+            className="flex items-center gap-3 w-full px-4 py-3 text-gray-500 hover:text-adni-laranja hover:bg-amber-50 rounded-xl transition-all duration-200 font-medium group"
           >
             <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
             <span>Encerrar Sessão</span>

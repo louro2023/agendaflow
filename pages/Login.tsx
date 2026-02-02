@@ -5,7 +5,6 @@ import { useData } from '../context/DataContext';
 import { Calendar, Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
-import logoSistema from '/logosistema.png';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -38,24 +37,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-indigo-600 to-purple-700 transform -skew-y-6 -translate-y-24 z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-adni-marrom to-adni-bronze transform -skew-y-6 -translate-y-24 z-0"></div>
       
       {/* Header com Logo */}
       <div className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-white/10 px-4 md:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
           <div className="p-2 bg-white rounded-lg shadow-sm">
-            <img src={logoSistema} alt="ADNI Itaipu" className="h-6 w-6" />
+            <Calendar size={24} className="text-adni-laranja" strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">ADNI Itaipu</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">ADNI ITAIPU</h1>
             <p className="text-xs text-gray-600">Sistema de Gestão de Agenda</p>
           </div>
           <div className="ml-auto">
             <button
               onClick={() => setShowLoginForm(!showLoginForm)}
-              className="px-4 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-sm"
+              className="px-4 py-2.5 bg-adni-gradient text-white font-medium rounded-lg hover:shadow-lg transition-all shadow-lg shadow-adni-laranja/30 text-sm"
             >
               {showLoginForm ? 'Voltar' : 'Fazer Login'}
             </button>
@@ -96,19 +95,19 @@ const Login: React.FC = () => {
 
                           <div className="flex flex-wrap gap-4 text-sm">
                             <div className="flex items-center gap-2 text-gray-600">
-                              <Calendar size={16} className="text-indigo-500" />
+                              <Calendar size={16} className="text-adni-laranja" />
                               <span>{formatDateBR(event.date)}</span>
                             </div>
 
                             {event.time && (
                               <div className="flex items-center gap-2 text-gray-600">
-                                <Clock size={16} className="text-indigo-500" />
+                                <Clock size={16} className="text-adni-ouro" />
                                 <span>{event.time}</span>
                               </div>
                             )}
 
                             <div className="flex items-center gap-2 text-gray-600">
-                              <User size={16} className="text-indigo-500" />
+                              <User size={16} className="text-adni-laranja" />
                               <span>{event.requesterName}</span>
                             </div>
                           </div>
@@ -128,13 +127,13 @@ const Login: React.FC = () => {
       ) : (
         /* Login Form View */
         <div className="relative z-10 flex-1 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 md:p-10">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 md:p-10 border border-amber-100">
             <div className="mb-10">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 mb-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-100 text-adni-laranja mb-4">
                 <Calendar size={28} />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Bem-vindo</h2>
-              <p className="text-gray-500">Insira suas credenciais para acessar o sistema.</p>
+              <h2 className="text-3xl font-bold text-adni-marrom mb-2">Bem-vindo</h2>
+              <p className="text-gray-600">Insira suas credenciais para acessar o sistema.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -149,7 +148,7 @@ const Login: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-transparent placeholder-gray-400"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-adni-ouro/20 focus:border-adni-laranja transition outline-none bg-transparent placeholder-gray-400"
                     placeholder="Preencha seu Email"
                   />
                 </div>
@@ -166,7 +165,7 @@ const Login: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none bg-transparent placeholder-gray-400"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-adni-ouro/20 focus:border-adni-laranja transition outline-none bg-transparent placeholder-gray-400"
                     placeholder="Preencha sua Senha"
                   />
                 </div>
@@ -175,7 +174,7 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3.5 px-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full py-3.5 px-4 bg-adni-gradient text-white font-bold rounded-xl shadow-lg shadow-adni-laranja/30 hover:shadow-adni-laranja/50 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {loading ? 'Processando...' : 'Acessar Sistema'}
                 {!loading && <ArrowRight size={18} />}
@@ -186,7 +185,7 @@ const Login: React.FC = () => {
       )}
 
       <p className="relative z-10 text-xs text-gray-500 text-center py-4 border-t border-gray-200">
-        © 2024 EventFlow System. Todos os direitos reservados.
+        © 2024 ADNI ITAIPU. Todos os direitos reservados.
       </p>
     </div>
   );
