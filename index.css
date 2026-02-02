@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global Styles */
+/* Global Base Styles */
 * {
   @apply antialiased;
 }
@@ -12,13 +12,45 @@ html {
 }
 
 body {
-  @apply bg-gray-50 text-gray-900;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  @apply bg-gradient-to-br from-slate-50 via-white to-slate-100 text-gray-900;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+h1 {
+  @apply text-4xl md:text-5xl font-bold tracking-tight;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl font-bold tracking-tight;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl font-bold tracking-tight;
+}
+
+h4 {
+  @apply text-xl md:text-2xl font-bold tracking-tight;
+}
+
+p {
+  @apply text-gray-700 leading-relaxed;
+}
+
+a {
+  @apply text-orange-600 hover:text-orange-700 transition-colors;
 }
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  @apply w-2 h-2;
+  @apply w-2.5 h-2.5;
 }
 
 ::-webkit-scrollbar-track {
@@ -26,7 +58,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition;
+  @apply bg-gray-400 rounded-full hover:bg-gray-500 transition-colors;
 }
 
 /* Animations */
@@ -41,7 +73,7 @@ body {
 
 @keyframes slideInUp {
   from {
-    transform: translateY(10px);
+    transform: translateY(20px);
     opacity: 0;
   }
   to {
@@ -52,11 +84,33 @@ body {
 
 @keyframes slideInDown {
   from {
-    transform: translateY(-10px);
+    transform: translateY(-20px);
     opacity: 0;
   }
   to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
     opacity: 1;
   }
 }
@@ -70,30 +124,59 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }
 
 .animate-slide-up {
-  animation: slideInUp 0.3s ease-out;
+  animation: slideInUp 0.4s ease-out;
 }
 
 .animate-slide-down {
-  animation: slideInDown 0.3s ease-out;
+  animation: slideInDown 0.4s ease-out;
 }
 
-/* Utility Classes */
+.animate-slide-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+/* Utility Classes - Shadows */
 @layer utilities {
   .shadow-soft {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   }
 
   .shadow-medium {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   }
 
   .shadow-lg-custom {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-xl-custom {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.15);
+  }
+
+  .shadow-glow-sm {
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.1);
   }
 }
 

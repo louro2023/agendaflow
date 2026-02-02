@@ -37,24 +37,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-soft flex flex-col relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-adni-marrom to-adni-bronze transform -skew-y-6 -translate-y-24 z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-orange-500 to-orange-400 transform -skew-y-6 -translate-y-24 z-0 opacity-90"></div>
       
       {/* Header com Logo */}
-      <div className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-white/10 px-4 md:px-8 py-4">
+      <div className="relative z-10 border-b border-white/10 backdrop-blur-md bg-white/10 px-4 md:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
-          <div className="p-2 bg-white rounded-lg shadow-sm">
-            <Calendar size={24} className="text-adni-laranja" strokeWidth={2.5} />
+          <div className="p-2 bg-white rounded-lg shadow-medium">
+            <Calendar size={24} className="text-orange-600" strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">ADNI ITAIPU</h1>
-            <p className="text-xs text-gray-600">Sistema de Gestão de Agenda</p>
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-white">ADNI ITAIPU</h1>
+            <p className="text-xs text-white/80">Sistema de Gestão de Agenda Corporativa</p>
           </div>
           <div className="ml-auto">
             <button
               onClick={() => setShowLoginForm(!showLoginForm)}
-              className="px-4 py-2.5 bg-adni-gradient text-white font-medium rounded-lg hover:shadow-lg transition-all shadow-lg shadow-adni-laranja/30 text-sm"
+              className="px-5 py-2.5 bg-white text-orange-600 font-display font-bold rounded-lg hover:shadow-lg transition-all shadow-medium text-sm"
             >
               {showLoginForm ? 'Voltar' : 'Fazer Login'}
             </button>
@@ -68,8 +68,8 @@ const Login: React.FC = () => {
         <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-6xl mx-auto">
             <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Agenda Corporativa</h2>
-              <p className="text-gray-600 text-lg">Confira a agenda de compromissos e reuniões agendadas</p>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-3">Agenda Corporativa</h2>
+              <p className="text-gray-700 text-lg font-body">Confira a agenda de compromissos e reuniões agendadas</p>
             </div>
 
             {/* Events List */}
