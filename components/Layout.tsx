@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Users, LogOut, Menu, X, ListTodo, Calendar } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import logoImg from '../logosistema.png';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { logout, currentUser, isAdmin } = useAuth();
@@ -31,7 +32,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
-            <img src="/logosistema.png" alt="Logo" className="h-8 w-auto" />
+            <img src={logoImg} alt="Logo" className="h-8 w-auto" />
             <span className="text-lg font-bold tracking-tight text-gray-800">Agenda ADNI</span>
         </div>
         <button 
@@ -57,7 +58,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       `}>
         <div className="p-8 hidden md:block">
           <div className="flex items-center gap-2">
-            <img src="/logosistema.png" alt="Logo ADNI" className="h-12 w-auto" />
+            <img src={logoImg} alt="Logo ADNI" className="h-12 w-auto" />
             <span className="text-2xl font-bold tracking-tight text-gray-800">Agenda ADNI</span>
           </div>
         </div>

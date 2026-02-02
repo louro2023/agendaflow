@@ -5,6 +5,7 @@ import { useData } from '../context/DataContext';
 import { Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
+import logoImg from '../logosistema.png';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -44,7 +45,7 @@ const Login: React.FC = () => {
       {/* Header com Logo */}
       <div className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-white/10 px-4 md:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
-          <img src="/logosistema.png" alt="Logo ADNI" className="h-10 md:h-12 w-auto" />
+          <img src={logoImg} alt="Logo ADNI" className="h-10 md:h-12 w-auto" />
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-gray-900">Agenda ADNI</h1>
             <p className="text-xs text-gray-600">Sistema de Gestão de Eventos</p>
