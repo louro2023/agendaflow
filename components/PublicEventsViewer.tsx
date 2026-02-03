@@ -10,7 +10,7 @@ interface PublicEventsViewerProps {
 
 const PublicEventsViewer: React.FC<PublicEventsViewerProps> = ({ events }) => {
   const navigate = useNavigate();
-  // Filtrar apenas eventos futuros
+  // Filtrar apenas eventos futuros e aprovados
   const upcomingEvents = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -18,9 +18,14 @@ const PublicEventsViewer: React.FC<PublicEventsViewerProps> = ({ events }) => {
     return events
       .filter(e => {
         const eventDate = new Date(e.date);
-        return eventDate >= today;
+        return eventDate >= today && e.status === EventStatus.APPROVED;
       })
-      .sort((a, b) => a.date.localeCompare(b.date))
+      .sort((a, b) => {
+        const dateCompare = a.date.localeCompare(b.date);
+        if (dateCompare !== 0) return dateCompare;
+        // Se for o mesmo dia, ordena por horário
+        return (a.time || '00:00').localeCompare(b.time || '00:00');
+      })
       .slice(0, 5); // Mostrar apenas os 5 próximos eventos
   }, [events]);
 

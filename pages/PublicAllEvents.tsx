@@ -2,14 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { useData } from '../context/DataContext';
 import { formatDateBR } from '../utils/dateFormatter';
 import { EventStatus, EventRequest } from '../types';
-import { Search, Calendar, Clock, User, CheckCircle2, AlertCircle, XCircle, ArrowLeft, Filter } from 'lucide-react';
+import { Search, Calendar, Clock, User, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const PublicAllEvents: React.FC = () => {
   const { events } = useData();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<EventStatus | 'all'>('all');
   const [sortBy, setSortBy] = useState<'date' | 'title'>('date');
 
   // Filtrar e ordenar eventos
@@ -19,16 +18,11 @@ const PublicAllEvents: React.FC = () => {
     
     let result = [...events];
 
-    // Filtrar apenas eventos futuros
+    // Filtrar apenas eventos futuros e aprovados
     result = result.filter(e => {
       const eventDate = new Date(e.date);
-      return eventDate >= today;
+      return eventDate >= today && e.status === EventStatus.APPROVED;
     });
-
-    // Filtro por status
-    if (statusFilter !== 'all') {
-      result = result.filter(e => e.status === statusFilter);
-    }
 
     // Filtro por busca
     if (searchTerm.trim()) {
@@ -40,50 +34,22 @@ const PublicAllEvents: React.FC = () => {
       );
     }
 
-    // Ordenação
+    // Ordenação: primeiro por data, depois por horário se for o mesmo dia
     result.sort((a, b) => {
+      const dateCompare = a.date.localeCompare(b.date);
+      if (dateCompare !== 0) return dateCompare;
+      // Se for o mesmo dia, ordena por horário
       if (sortBy === 'date') {
-        return a.date.localeCompare(b.date);
+        return (a.time || '00:00').localeCompare(b.time || '00:00');
       } else {
         return a.title.localeCompare(b.title);
       }
     });
 
     return result;
-  }, [events, searchTerm, statusFilter, sortBy]);
+  }, [events, searchTerm, sortBy]);
 
-  const getStatusIcon = (status: EventStatus) => {
-    switch (status) {
-      case EventStatus.APPROVED:
-        return <CheckCircle2 size={16} className="text-green-600" />;
-      case EventStatus.REJECTED:
-        return <XCircle size={16} className="text-red-600" />;
-      case EventStatus.PENDING:
-        return <AlertCircle size={16} className="text-amber-600" />;
-    }
-  };
-
-  const getStatusLabel = (status: EventStatus) => {
-    switch (status) {
-      case EventStatus.APPROVED:
-        return 'Aprovado';
-      case EventStatus.REJECTED:
-        return 'Rejeitado';
-      case EventStatus.PENDING:
-        return 'Pendente';
-    }
-  };
-
-  const getStatusColor = (status: EventStatus) => {
-    switch (status) {
-      case EventStatus.APPROVED:
-        return 'bg-green-50 text-green-700 border-green-200';
-      case EventStatus.REJECTED:
-        return 'bg-red-50 text-red-700 border-red-200';
-      case EventStatus.PENDING:
-        return 'bg-amber-50 text-amber-700 border-amber-200';
-    }
-  };
+  // Nota: statusFilter removido pois a página pública mostra apenas eventos aprovados
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 md:p-8">
@@ -124,27 +90,13 @@ const PublicAllEvents: React.FC = () => {
             {/* Filtros */}
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
-                <label className="text-sm font-medium text-gray-600 block mb-2">Status</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as EventStatus | 'all')}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none"
-                >
-                  <option value="all">Todos os Status</option>
-                  <option value={EventStatus.PENDING}>Pendente</option>
-                  <option value={EventStatus.APPROVED}>Aprovado</option>
-                  <option value={EventStatus.REJECTED}>Rejeitado</option>
-                </select>
-              </div>
-
-              <div className="flex-1">
                 <label className="text-sm font-medium text-gray-600 block mb-2">Ordenar por</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'date' | 'title')}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition outline-none"
                 >
-                  <option value="date">Data</option>
+                  <option value="date">Data e Horário</option>
                   <option value="title">Título</option>
                 </select>
               </div>
@@ -171,17 +123,7 @@ const PublicAllEvents: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:items-start gap-4">
                   {/* Conteúdo principal */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-gray-900 flex-1">{event.title}</h3>
-                      <div
-                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${getStatusColor(
-                          event.status
-                        )}`}
-                      >
-                        {getStatusIcon(event.status)}
-                        {getStatusLabel(event.status)}
-                      </div>
-                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{event.title}</h3>
 
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
 
