@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
+import { EventStatus } from '../types';
 import { Calendar, Lock, Mail, ArrowRight, Clock, User } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { formatDateBR } from '../utils/dateFormatter';
