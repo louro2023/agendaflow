@@ -558,13 +558,28 @@ const Dashboard: React.FC = () => {
                           >
                             {idx === 0 && (
                               <td rowSpan={dayEvents.length} className="px-6 py-4 whitespace-nowrap align-top">
-                                <span className={`text-sm font-medium ${!isCurrentMonth ? 'text-gray-400' : 'text-gray-900'}`}>
-                                  {formatDateBR(dateStr)}
-                                </span>
+                                <div className="flex flex-col gap-2">
+                                  <span className={`text-sm font-medium ${!isCurrentMonth ? 'text-gray-400' : 'text-gray-900'}`}>
+                                    {formatDateBR(dateStr)}
+                                  </span>
+                                  {dayEvents.length > 1 && (
+                                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-full">
+                                      <span className="text-xs font-bold text-indigo-700">{dayEvents.length}</span>
+                                      <span className="text-xs text-indigo-600">evento{dayEvents.length > 1 ? 's' : ''}</span>
+                                    </div>
+                                  )}
+                                </div>
                               </td>
                             )}
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="text-sm font-medium text-gray-900">{event.time}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-gray-900">{event.time}</span>
+                                {dayEvents.length > 1 && (
+                                  <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-purple-100 text-purple-700 rounded-full">
+                                    {idx + 1}/{dayEvents.length}
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td className="px-6 py-4">
                               <span className="text-sm font-semibold text-gray-900">{event.title}</span>

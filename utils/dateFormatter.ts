@@ -71,22 +71,29 @@ export const timeToMinutes = (time: string): number => {
  * @param existingTime Horário do evento existente (HH:MM)
  * @param newTime Horário do novo evento (HH:MM)
  * @param minGapHours Espaço mínimo em horas entre eventos (default: 2)
- * @returns true se há conflito, false caso contrário
+ * @returns Objeto com { hasConflict: boolean, timeDiffHours?: number, minutesGap?: number }
  */
 export const hasTimeConflict = (
   existingTime: string,
   newTime: string,
   minGapHours: number = 2
-): boolean => {
+): { hasConflict: boolean; timeDiffHours?: number; minutesGap?: number } => {
   const existingMinutes = timeToMinutes(existingTime);
   const newMinutes = timeToMinutes(newTime);
   const minGapMinutes = minGapHours * 60;
 
-  // Verifica se o novo evento começa dentro do gap de 2 horas ANTES do evento existente
-  // ou dentro do gap de 2 horas DEPOIS do evento existente
+  // Calcula a diferença absoluta em minutos
   const diff = Math.abs(existingMinutes - newMinutes);
   
-  return diff < minGapMinutes;
+  // Converte para horas e minutos
+  const timeDiffHours = Math.floor(diff / 60);
+  const minutesGap = diff % 60;
+
+  return {
+    hasConflict: diff < minGapMinutes,
+    timeDiffHours,
+    minutesGap
+  };
 };
 
 /**
@@ -110,11 +117,19 @@ export const validateEventConflict = (
 
   // Verifica conflito de horário
   for (const event of eventsOnSameDay) {
-    if (hasTimeConflict(event.time, newTime)) {
+    const conflictCheck = hasTimeConflict(event.time, newTime);
+    
+    if (conflictCheck.hasConflict) {
+      const timeGapText = conflictCheck.timeDiffHours === 0 
+        ? `${conflictCheck.minutesGap} minutos`
+        : conflictCheck.minutesGap === 0
+          ? `${conflictCheck.timeDiffHours} hora${conflictCheck.timeDiffHours > 1 ? 's' : ''}`
+          : `${conflictCheck.timeDiffHours}h ${conflictCheck.minutesGap}min`;
+      
       return {
         valid: false,
         conflictingEvent: event,
-        message: `Já existe um evento cadastrado para ${event.time} (${event.title}). Precisa ter pelo menos 2 horas de espaço entre eventos.`
+        message: `❌ Conflito detectado! Já existe um evento em "${event.title}" às ${event.time}.\n\nVocê tentou agendar às ${newTime}, o que resulta em apenas ${timeGapText} de diferença.\n\n⏱️ Mínimo obrigatório: 2 horas de espaço entre eventos no mesmo dia.`
       };
     }
   }

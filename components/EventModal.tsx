@@ -224,11 +224,11 @@ const EventModal: React.FC<EventModalProps> = ({
               </div>
 
               {conflictError && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex gap-3">
-                  <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex gap-3 animate-shake">
+                  <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={24} />
                   <div>
-                    <p className="text-sm font-semibold text-red-800">Conflito de Horário</p>
-                    <p className="text-sm text-red-700 mt-1">{conflictError}</p>
+                    <p className="text-sm font-bold text-red-900 mb-2">⚠️ Não é possível agendar este evento</p>
+                    <p className="text-sm text-red-800 whitespace-pre-wrap font-medium leading-relaxed">{conflictError}</p>
                   </div>
                 </div>
               )}
