@@ -83,7 +83,12 @@ const Login: React.FC = () => {
                     const eventDate = new Date(e.date);
                     return eventDate >= today && e.status !== EventStatus.PENDING;
                   })
-                  .sort((a, b) => a.date.localeCompare(b.date))
+                  .sort((a, b) => {
+                    const dateCompare = a.date.localeCompare(b.date);
+                    if (dateCompare !== 0) return dateCompare;
+                    // Se for o mesmo dia, ordena por horário
+                    return (a.time || '00:00').localeCompare(b.time || '00:00');
+                  })
                   .map((event) => (
                     <div
                       key={event.id}
