@@ -80,7 +80,10 @@ const Dashboard: React.FC = () => {
     const date = String(day.getDate()).padStart(2, '0');
     const dayString = `${year}-${month}-${date}`;
     
-    return filteredEvents.filter(event => event.date === dayString);
+    // Filtra eventos do dia e ordena por horário (mais cedo primeiro)
+    return filteredEvents
+      .filter(event => event.date === dayString)
+      .sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
   };
 
   const handleDayDoubleClick = (day: Date) => {
