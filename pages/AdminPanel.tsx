@@ -8,13 +8,16 @@ import { Check, X, ShieldAlert, User as UserIcon, Power, TrendingUp, Users, Cale
 import { useNavigate } from 'react-router-dom';
 
 const AdminPanel: React.FC = () => {
-  const { events, users, updateEventStatus, addUser, updateUser, toggleUserStatus } = useData();
+  const { events, users, updateEventStatus, addUser, updateUser, toggleUserStatus, updateEventTime } = useData();
   const { isAdmin } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState<'events' | 'users'>('events');
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
+  const [editingEventTime, setEditingEventTime] = useState<{ eventId: string; currentTime: string } | null>(null);
+  const [newEventTime, setNewEventTime] = useState('');
   
   // User Form State
   const [userName, setUserName] = useState('');
@@ -180,6 +183,13 @@ const AdminPanel: React.FC = () => {
 
                         <div className="flex flex-row md:flex-col gap-2 justify-center min-w-[140px]">
                             <button 
+                                onClick={() => { setEditingEventTime({ eventId: event.id, currentTime: event.time }); setNewEventTime(event.time); setIsTimeModalOpen(true); }}
+                                className="flex-1 px-4 py-2 bg-blue-50 text-blue-700 font-medium rounded-lg hover:bg-blue-100 hover:text-blue-800 transition flex items-center justify-center gap-2"
+                                title="Editar horário do evento"
+                            >
+                                🕒 Horário
+                            </button>
+                            <button 
                                 onClick={() => { updateEventStatus(event.id, EventStatus.APPROVED); addToast('Aprovado!', 'success'); }}
                                 className="flex-1 px-4 py-2 bg-green-50 text-green-700 font-medium rounded-lg hover:bg-green-100 hover:text-green-800 transition flex items-center justify-center gap-2"
                             >
@@ -343,6 +353,63 @@ const AdminPanel: React.FC = () => {
                   className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg shadow-indigo-200 transition"
                 >
                   Salvar Dados
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Time Edit Modal */}
+      {isTimeModalOpen && editingEventTime && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all animate-in zoom-in-95">
+            <h3 className="text-xl font-bold text-gray-800 mb-1">Editar Horário do Evento</h3>
+            <p className="text-sm text-gray-500 mb-6">Altere o horário do evento abaixo.</p>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (newEventTime && editingEventTime) {
+                updateEventTime(editingEventTime.eventId, newEventTime);
+                addToast('Horário atualizado com sucesso!', 'success');
+                setIsTimeModalOpen(false);
+                setEditingEventTime(null);
+                setNewEventTime('');
+              }
+            }} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Horário Anterior</label>
+                <div className="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 text-gray-700 font-medium">
+                  {editingEventTime.currentTime}
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Novo Horário</label>
+                <input
+                  type="time"
+                  required
+                  value={newEventTime}
+                  onChange={e => setNewEventTime(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition outline-none"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsTimeModalOpen(false);
+                    setEditingEventTime(null);
+                    setNewEventTime('');
+                  }}
+                  className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-200 transition"
+                >
+                  Salvar Horário
                 </button>
               </div>
             </form>

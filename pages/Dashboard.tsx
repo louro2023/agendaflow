@@ -21,7 +21,7 @@ import EventModal from '../components/EventModal';
 import { ChevronLeft, ChevronRight, Plus, ChevronDown, Trash2, CalendarDays, Grid3x3, List } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
-  const { events, addEvent, updateEventStatus, deleteEvent, updateEventDetails } = useData();
+  const { events, addEvent, updateEventStatus, deleteEvent, updateEventDetails, updateEventTime } = useData();
   const { currentUser, isCommon, isAdmin } = useAuth();
   const { addToast } = useToast();
   
@@ -148,6 +148,12 @@ const Dashboard: React.FC = () => {
   const handleEditEvent = (id: string, title: string, description: string) => {
     updateEventDetails(id, title, description);
     addToast('Evento atualizado com sucesso!', 'success');
+  };
+
+  const handleUpdateEventTime = (id: string, time: string) => {
+    updateEventTime(id, time);
+    addToast('Horário do evento atualizado!', 'success');
+    setModalOpen(false);
   };
 
   const handleApprove = (id: string) => {
@@ -665,6 +671,7 @@ const Dashboard: React.FC = () => {
         onReject={handleReject}
         onDelete={handleDelete}
         onEdit={handleEditEvent}
+        onUpdateTime={handleUpdateEventTime}
       />
     </div>
   );

@@ -15,6 +15,7 @@ interface EventModalProps {
   onReject?: (id: string) => void;
   onDelete?: (id: string) => void;
   onEdit?: (id: string, title: string, description: string) => void;
+  onUpdateTime?: (id: string, time: string) => void;
 }
 
 const EventModal: React.FC<EventModalProps> = ({ 
@@ -27,12 +28,14 @@ const EventModal: React.FC<EventModalProps> = ({
   onApprove,
   onReject,
   onDelete,
-  onEdit
+  onEdit,
+  onUpdateTime
 }) => {
   const { isAdmin, currentUser } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTime, setIsEditingTime] = useState(false);
   const [chosenDate, setChosenDate] = useState<string | undefined>(undefined);
   const [dateInputValue, setDateInputValue] = useState('');
   const [chosenTime, setChosenTime] = useState<string>('09:00');
@@ -70,6 +73,7 @@ const EventModal: React.FC<EventModalProps> = ({
       setTitle(existingEvent.title);
       setDescription(existingEvent.description);
       setIsEditing(false);
+      setIsEditingTime(false);
       setChosenDate(undefined);
       setDateInputValue('');
       setChosenTime(existingEvent.time || '09:00');
@@ -78,6 +82,7 @@ const EventModal: React.FC<EventModalProps> = ({
       setTitle('');
       setDescription('');
       setIsEditing(true); // New event is always "editing" mode
+      setIsEditingTime(false);
       setChosenDate(selectedDate); // Set initial date from prop
       setDateInputValue(selectedDate ? formatDateBR(selectedDate) : '');
       setChosenTime('09:00'); // Default time
@@ -93,6 +98,9 @@ const EventModal: React.FC<EventModalProps> = ({
     if (existingEvent && isEditing && onEdit) {
       onEdit(existingEvent.id, title, description);
       setIsEditing(false);
+    } else if (existingEvent && isEditingTime && onUpdateTime) {
+      onUpdateTime(existingEvent.id, chosenTime);
+      setIsEditingTime(false);
     } else if (!existingEvent) {
       // Validar conflito de horário para novo evento
       if (chosenDate) {
@@ -143,14 +151,51 @@ const EventModal: React.FC<EventModalProps> = ({
         </div>
 
         <div className="p-6">
-          {existingEvent && !isEditing && (
+          {existingEvent && !isEditing && !isEditingTime && (
             <div className={`mb-4 px-3 py-1.5 rounded-md border text-sm font-medium inline-block ${getStatusColor(existingEvent.status)}`}>
               Status: {translateStatus(existingEvent.status)}
             </div>
           )}
 
-          {!existingEvent || isEditing ? (
+          {!existingEvent || isEditing || isEditingTime ? (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {isEditingTime && existingEvent ? (
+                // Form only for editing time
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Novo Horário</label>
+                    <input
+                      type="time"
+                      required
+                      value={chosenTime}
+                      onChange={(e) => setChosenTime(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Horário atual: {existingEvent.time}</p>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4 border-t">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditingTime(false);
+                        setChosenTime(existingEvent.time || '09:00');
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition"
+                    >
+                      Salvar Horário
+                    </button>
+                  </div>
+                </>
+              ) : (
+                // Full form for create or edit
+                <>
                <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Data do Evento</label>
                 {!existingEvent ? (
@@ -266,6 +311,8 @@ const EventModal: React.FC<EventModalProps> = ({
                     </button>
                  </div>
               </div>
+              </>
+              )}
             </form>
           ) : (
             <div className="space-y-4">
@@ -277,7 +324,18 @@ const EventModal: React.FC<EventModalProps> = ({
                     </div>
                     <div>
                         <p className="text-sm text-gray-500">Horário</p>
-                        <p className="font-medium text-gray-900">{existingEvent.time}</p>
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium text-gray-900">{existingEvent.time}</p>
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => setIsEditingTime(true)}
+                              className="text-xs px-2 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition"
+                            >
+                              Editar
+                            </button>
+                          )}
+                        </div>
                     </div>
                     <div>
                         <p className="text-sm text-gray-500">Título</p>

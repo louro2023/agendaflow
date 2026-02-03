@@ -17,6 +17,7 @@ interface DataContextType {
   addEvent: (event: Omit<EventRequest, 'id' | 'status'>) => void;
   updateEventStatus: (id: string, status: EventStatus) => void;
   updateEventDetails: (id: string, title: string, description: string) => void;
+  updateEventTime: (id: string, time: string) => void;
   deleteEvent: (id: string) => void;
   addUser: (user: Omit<User, 'id'>) => void;
   updateUser: (user: User) => void;
@@ -107,6 +108,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     persistEvents(updatedEvents).catch(err => console.error("Erro ao atualizar detalhes", err));
   };
 
+  const updateEventTime = (id: string, time: string) => {
+    const updatedEvents = events.map(e => e.id === id ? { ...e, time } : e);
+    setEvents(updatedEvents);
+    persistEvents(updatedEvents).catch(err => console.error("Erro ao atualizar horário", err));
+  };
+
   const deleteEvent = (id: string) => {
     const updatedEvents = events.filter(e => e.id !== id);
     setEvents(updatedEvents);
@@ -144,6 +151,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addEvent,
       updateEventStatus,
       updateEventDetails,
+      updateEventTime,
       deleteEvent,
       addUser,
       updateUser,
