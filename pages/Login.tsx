@@ -80,7 +80,7 @@ const Login: React.FC = () => {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     const eventDate = new Date(e.date);
-                    return eventDate >= today;
+                    return eventDate >= today && e.status !== EventStatus.PENDING;
                   })
                   .sort((a, b) => a.date.localeCompare(b.date))
                   .map((event) => (
