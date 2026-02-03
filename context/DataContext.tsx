@@ -32,10 +32,25 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [users, setUsers] = useState<User[]>(() => getLocalUsers());
   const [loading, setLoading] = useState(false);
 
-  // Efeito para carregar dados iniciais
+  // Efeito para carregar dados iniciais e configurar listeners de tempo real
   useEffect(() => {
-    // Carrega dados do servidor de forma não-bloqueante
+    // Carrega dados do Firebase de forma não-bloqueante
     loadServerData();
+
+    // Configura listeners para sincronização em tempo real
+    const unsubscribeUsers = subscribeToUsers((updatedUsers) => {
+      setUsers(updatedUsers);
+    });
+
+    const unsubscribeEvents = subscribeToEvents((updatedEvents) => {
+      setEvents(updatedEvents);
+    });
+
+    // Cleanup: desinscreve dos listeners quando o componente desmontar
+    return () => {
+      unsubscribeUsers();
+      unsubscribeEvents();
+    };
   }, []);
 
   const loadServerData = async () => {
